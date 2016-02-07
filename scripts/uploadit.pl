@@ -51,7 +51,9 @@ sub main{
 	     'sfv!'=>\$SFV,
 	     'nfo=s'=>\$NFO,
 	     'force_rename|rename!'=>\$FORCE_RENAME);
-  
+
+  $UP_ARGS .=' ' if $UP_ARGS ne '';
+  $UP_ARGS ="-group ".join(' -group ', @GROUPS) if @GROUPS;
   
   if ($DIRECTORY eq '' || !-e $DIRECTORY ) {
     
@@ -247,11 +249,14 @@ sub upload_files{
   if (@$preProcessedFiles) {
     my @escapedFiles=();
     push @escapedFiles, "\"$_\"" for @$preProcessedFiles;
-    
-    my $args = $configs->{EXTRA_ARGS_TO_UPLOADER}." $extra_args"." -f ".join(' -f ', @escapedFiles);
+
+    my $args = '';
+    $args .=  $configs->{EXTRA_ARGS_TO_UPLOADER} if $configs->{EXTRA_ARGS_TO_UPLOADER} ne '';
+    $args .= "$extra_args -f ".join(' -f ', @escapedFiles);
     my $invoke = $configs->{PATH_TO_UPLOADER}.' '.$args;
     $invoke =~ s/\/\//\//g;
     say "$invoke" if $DEBUG;
+    exit 0;
     system($invoke);
   }
 }
