@@ -229,7 +229,11 @@ sub _parse_command_line{
       }
 
       if (!defined $headerCheckRetries) {
-	$headerCheckRetries = $config->{headerCheck}{retries} if exists $config->{headerCheck}{retries};
+	if (exists $config->{headerCheck}{retries}){
+	  $headerCheckRetries = $config->{headerCheck}{retries};
+	}else {
+	  $headerCheckRetries=3;
+	}
       }      
     }
 
